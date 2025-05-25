@@ -165,14 +165,8 @@ function startSearch() {
   const val = parseInt(document.getElementById('inputValue').value);
   showFormula(val);
   if (isNaN(val)) return;
-  let idx = getSearchIndex(val);
-  if (idx !== null) {
-    animateDotToIndex(idx);
-    setTimeout(clearDot, 700);
-    drawArrowToIndex(idx);
-    setTimeout(clearArrow, 1000);
-  }
-  prepareStep('search', val);
+  // Only use animated search, not step-by-step for this button
+  animatedSearch(val);
   clearInputAndArrow();
 }
 function startRemove() {
@@ -693,3 +687,47 @@ function hideTooltip() {
 renderTable();
 renderStats();
 enableStepControls(false);
+
+// --- New animated search function ---
+function animatedSearch(val) {
+  const method = getMethod();
+  const start = hash(val);
+  const h2 = hash2(val);
+  let i = 0;
+  let interval = 500; // ms between steps
+
+  function getIdx(i) {
+    if (method === 'linear') return (start + i) % SIZE;
+    if (method === 'double') return (start + i * h2) % SIZE;
+    return (start + i * i) % SIZE;
+  }
+
+  function step() {
+    if (i >= SIZE) {
+      document.getElementById('message').textContent = `${val} not found!`;
+      renderTable();
+      return;
+    }
+    const idx = getIdx(i);
+    renderTable(idx); // highlight current cell
+    animateDotToIndex(idx);
+
+    // Wait, then check value
+    setTimeout(() => {
+      if (table[idx] === val) {
+        renderTable(null, idx); // highlight as found
+        document.getElementById('message').textContent = `Found ${val} at index ${idx}`;
+        return;
+      } else if (table[idx] === null) {
+        renderTable();
+        document.getElementById('message').textContent = `${val} not found!`;
+        return;
+      } else {
+        i++;
+        step();
+      }
+    }, interval);
+  }
+
+  step();
+}
