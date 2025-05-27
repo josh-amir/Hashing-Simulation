@@ -1,4 +1,4 @@
-const SIZE = 10;
+let SIZE = 10; // Change from const to let
 const DELETED = Symbol('deleted');
 let table = Array(SIZE).fill(null);
 let lastInsertedIdx = null;
@@ -15,6 +15,31 @@ let stepMode = false;
 let stepData = null;
 let stepTimer = null;
 let stepAuto = false;
+
+// --- Table Size Controls ---
+const tableSizeInput = document.getElementById('tableSize');
+const setTableSizeBtn = document.getElementById('setTableSizeBtn');
+
+setTableSizeBtn.onclick = function() {
+  const newSize = parseInt(tableSizeInput.value, 10);
+  if (isNaN(newSize) || newSize < 3 || newSize > 50) {
+    alert('Please enter a table size between 3 and 50.');
+    return;
+  }
+  SIZE = newSize;
+  table = Array(SIZE).fill(null);
+  history = [];
+  totalCollisions = 0;
+  totalProbes = 0;
+  lastProbes = 0;
+  lastCollisions = 0;
+  lastInsertedIdx = null;
+  resetTable();
+  renderTable();
+  renderStats();
+  renderSortedArray();
+  document.getElementById('message').textContent = `Table size set to ${SIZE}.`;
+};
 
 // Dark mode toggle
 const darkModeBtn = document.getElementById('darkModeToggle');
@@ -165,9 +190,8 @@ function startSearch() {
   const val = parseInt(document.getElementById('inputValue').value);
   showFormula(val);
   if (isNaN(val)) return;
-  // Only use animated search, not step-by-step for this button
   animatedSearch(val);
-  clearInputAndArrow();
+  // Do NOT call clearInputAndArrow() here!
 }
 function startRemove() {
   const val = parseInt(document.getElementById('inputValue').value);
@@ -690,6 +714,9 @@ enableStepControls(false);
 
 // --- New animated search function ---
 function animatedSearch(val) {
+  if (searchAnimating) return; // Prevent overlapping animations
+  searchAnimating = true;
+
   const method = getMethod();
   const start = hash(val);
   const h2 = hash2(val);
@@ -702,25 +729,28 @@ function animatedSearch(val) {
     return (start + i * i) % SIZE;
   }
 
+  function finish(msg, foundIdx = null) {
+    searchAnimating = false;
+    renderTable(null, foundIdx);
+    document.getElementById('message').textContent = msg;
+    clearInputAndArrow(); // <-- Move it here!
+  }
+
   function step() {
     if (i >= SIZE) {
-      document.getElementById('message').textContent = `${val} not found!`;
-      renderTable();
+      finish(`${val} not found!`);
       return;
     }
     const idx = getIdx(i);
     renderTable(idx); // highlight current cell
     animateDotToIndex(idx);
 
-    // Wait, then check value
     setTimeout(() => {
       if (table[idx] === val) {
-        renderTable(null, idx); // highlight as found
-        document.getElementById('message').textContent = `Found ${val} at index ${idx}`;
+        finish(`Found ${val} at index ${idx}`, idx);
         return;
       } else if (table[idx] === null) {
-        renderTable();
-        document.getElementById('message').textContent = `${val} not found!`;
+        finish(`${val} not found!`);
         return;
       } else {
         i++;
@@ -731,3 +761,5 @@ function animatedSearch(val) {
 
   step();
 }
+
+let searchAnimating = false;
