@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hashing Simulation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button id="darkModeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+  <div class="container">
+    <div class="header-block">
+      <h1 class="main-title">Hashing Simulation</h1>
+      <div class="subtitle">Linear Probing, Double Hashing &amp; Quadratic Probing</div>
+      <div class="author">Prince Joshua Ngojo BSCS-2</div>
+    </div>
+    <div class="about-toggle-row">
+      <button class="about-toggle" id="aboutToggle" aria-label="Show about hashing" title="Show about hashing">ℹ️</button>
+      <span style="font-size:0.95em;color:var(--crimson-dark);margin-left:8px;">Show/Hide About Hashing</span>
+    </div>
+    <div class="info" id="aboutInfo">
+      <button class="help-toggle" id="helpToggle" aria-label="Show instructions" title="Show instructions">❓</button>
+      <strong>About Hashing:</strong><br>
+      Hashing is a technique to map data of arbitrary size to fixed-size values. In this simulation, you can choose between:<br>
+      <ul>
+        <li><b>Linear Probing:</b> <span class="formula"><span>hash(value) = value % SIZE</span></span> – If a collision occurs, move to the next cell.</li>
+        <li><b>Double Hashing:</b> <span class="formula"><span>hash2(value) = 1 + (value % (SIZE-1))</span></span> – If a collision occurs, move by a step size given by a second hash function.</li>
+        <li><b>Quadratic Probing:</b> <span class="formula"><span>hash(value, i) = (hash(value) + i<sup>2</sup>) % SIZE</span></span> – If a collision occurs, move by i<sup>2</sup> steps.</li>
+      </ul>
+      <b>Insert:</b> Value is placed at the index given by the hash. If occupied, the chosen collision method is used.<br>
+      <b>Search:</b> The table is probed using the chosen method until the value is found or an empty cell is reached.<br>
+      <b>Delete:</b> The value is searched and removed if found.
+    </div>
+    <div class="help-content" id="helpContent">
+      <b>Instructions:</b>
+      <ul>
+        <li>Enter a value and select a collision method.</li>
+        <li>Click <b>Insert</b> to add the value to the table.</li>
+        <li>Click <b>Search</b> to find a value in the table.</li>
+        <li>Click <b>Delete</b> to remove a value from the table.</li>
+        <li>Use the <b>step controls</b> (Prev, Next, Auto, Stop) to animate each operation step-by-step.</li>
+        <li>See the <b>Probing Sequence</b> and <b>Statistics</b> panels for detailed feedback.</li>
+        <li>Toggle <b>🌙</b> for dark mode.</li>
+      </ul>
+    </div>
+    <div class="input-row">
+      <label for="tableSize" style="margin-right:4px;">Table Size:</label>
+      <input type="number" id="tableSize" min="3" max="50" value="10" style="width:60px; margin-right:8px;">
+      <button id="setTableSizeBtn" style="margin-right:16px;">Set Size</button>
+      <input type="number" id="inputValue" placeholder="Enter value" aria-label="Enter value" />
+      <select id="collisionMethod" aria-label="Select collision method">
+        <option value="linear">Linear Probing</option>
+        <option value="double">Double Hashing</option>
+        <option value="quadratic">Quadratic Probing</option>
+      </select>
+      <button onclick="startInsert()" aria-label="Insert value">Insert</button>
+      <button onclick="startSearch()" aria-label="Search value">Search</button>
+      <button onclick="startRemove()" aria-label="Delete value">Delete</button>
+      <button class="reset-btn" onclick="resetTable()" aria-label="Reset table">Reset</button>
+      <button class="undo-btn" onclick="undo()" aria-label="Undo last action">Undo</button>
+    </div>
+    <div class="arrow-container" id="arrowContainer"></div>
+    <div class="dot-container" id="dotContainer"></div>
+    <div class="step-controls">
+      <button class="step-btn" id="stepPrev" onclick="stepPrev()" disabled aria-label="Previous step">Prev</button>
+      <button class="step-btn" id="stepNext" onclick="stepNext()" disabled aria-label="Next step">Next</button>
+      <button class="step-btn" id="stepAuto" onclick="toggleAuto()" disabled aria-label="Auto step">Auto</button>
+      <button class="step-btn" id="stepStop" onclick="stopStep()" disabled aria-label="Stop step mode">Stop</button>
+    </div>
+    <div id="loadBarContainer" class="load-bar-container">
+      <div id="loadBar" class="load-bar"></div>
+      <span id="loadBarLabel" class="load-bar-label"></span>
+    </div>
+    <div id="statsPanel" class="stats-panel"></div>
+    <div id="probingSequence" class="probing-sequence"></div>
+    <div id="hashFormula" class="formula"></div>
+    <div id="message"></div>
+    <table id="hashTable"></table>
+    <div id="sortedArrayContainer" style="margin-top:24px;">
+      <h3 style="text-align:center; color:var(--crimson); margin-bottom:8px;">Sorted Array</h3>
+      <table id="sortedArrayTable"></table>
+    </div>
+    <div style="text-align:center; color:#A51C30; margin-top:32px; font-size:0.95em;">
+      &copy; 2025 Prince Joshua Ngojo. All rights reserved.
+    </div>
+
+    <!-- Operation History Panel -->
+    <div id="historyPanel" class="history-panel">
+      <div class="history-header">
+        <span>Operation History</span>
+        <button id="clearHistoryBtn" title="Clear history" aria-label="Clear history">🗑️</button>
+      </div>
+      <div id="historyLog" class="history-log"></div>
+    </div>
+
+    <!-- Share/Embed Panel -->
+    <div class="share-embed-panel">
+      <button id="shareBtn" title="Copy shareable link" aria-label="Copy shareable link">🔗 Share</button>
+      <button id="embedBtn" title="Copy embed code" aria-label="Copy embed code">&lt;/&gt; Embed</button>
+      <input id="shareInput" class="share-input" readonly style="display:none;" />
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

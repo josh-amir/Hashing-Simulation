@@ -52,13 +52,33 @@ h2 {
   font-family: 'Merriweather', Georgia, serif;
   font-weight: 700;
 }
-.author {
+.header-block {
   text-align: center;
+  margin-bottom: 20px;
+}
+
+.main-title {
+  font-family: 'Merriweather', serif;
+  font-size: 2.2em;
+  font-weight: 700;
+  color: var(--crimson, #A51C30);
+  margin-bottom: 0.15em;
+  line-height: 1.1;
+}
+
+.subtitle {
   font-size: 1.1em;
-  color: var(--crimson-dark);
-  margin-bottom: 24px;
-  font-weight: bold;
-  font-family: 'Merriweather', Georgia, serif;
+  color: var(--crimson-dark, #820000);
+  margin-bottom: 0.5em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.author {
+  font-size: 1em;
+  color: var(--crimson-dark, #820000);
+  opacity: 0.95;
+  margin-bottom: 0.5em;
 }
 .info {
   background: var(--info-bg);
@@ -128,10 +148,12 @@ h2 {
 }
 .input-row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   margin-bottom: 18px;
+  padding: 0 0 8px 0;
 }
 input[type="number"] {
   padding: 7px 10px;
