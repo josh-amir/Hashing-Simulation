@@ -22,19 +22,107 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 .dark-mode {
-  --crimson: #FFC72C;
-  --crimson-dark: #FFD700;
-  --gold: #A51C30;
-  --gold-dark: #820000;
-  --bg: #232323;
-  --info-bg: #2d2d2d;
-  --table-bg: #232323;
+  --crimson: #ffb74d;
+  --crimson-dark: #ffd54f;
+  --gold: #ffecb3;
+  --gold-dark: #ffe082;
+  --bg: #181a1b;
+  --info-bg: #23272a;
+  --table-bg: #23272a;
   --text-main: #f5f5f5;
-  --highlight: #A51C30;
-  --highlight-text: #FFC72C;
-  --found: #22c55e;
-  --deleted: #ef4444;
-  --step-glow: 0 0 8px 2px #FFC72CAA;
+  --highlight: #ffb74d;
+  --highlight-text: #181a1b;
+  --found: #43e97b;
+  --deleted: #ef5350;
+  --step-glow: 0 0 8px 2px #ffb74daa;
+}
+.dark-mode body {
+  background: var(--bg);
+  color: var(--text-main);
+}
+.dark-mode .container {
+  background: var(--table-bg);
+  border: 1px solid #222;
+  box-shadow: 0 4px 24px #000a;
+}
+.dark-mode .info,
+.dark-mode .stats-panel,
+.dark-mode .probing-sequence,
+.dark-mode .history-panel {
+  background: var(--info-bg) !important;
+  color: var(--text-main);
+  border-color: var(--crimson);
+}
+.dark-mode table,
+.dark-mode #sortedArrayTable {
+  background: var(--table-bg);
+  color: var(--text-main);
+}
+.dark-mode th {
+  background: var(--crimson);
+  color: #181a1b;
+}
+.dark-mode td {
+  background: #23272a;
+  color: var(--text-main);
+}
+.dark-mode td:hover {
+  background: #333;
+  color: var(--highlight);
+  box-shadow: 0 0 0 2px var(--crimson);
+}
+.dark-mode input[type="number"],
+.dark-mode select {
+  background: #23272a;
+  color: var(--text-main);
+  border: 1px solid #444;
+}
+.dark-mode input[type="number"]:focus,
+.dark-mode select:focus {
+  border: 1.5px solid var(--crimson);
+}
+.dark-mode button,
+.dark-mode .step-btn {
+  background: var(--crimson);
+  color: #181a1b;
+}
+.dark-mode .reset-btn,
+.dark-mode .undo-btn {
+  background: var(--gold);
+  color: #181a1b;
+}
+.dark-mode .reset-btn:hover,
+.dark-mode .undo-btn:hover {
+  background: var(--gold-dark);
+  color: #23272a;
+}
+.dark-mode #message {
+  background: #23272a;
+  color: var(--crimson);
+  border-left: 3px solid var(--crimson);
+}
+.dark-mode .load-bar-container {
+  background: #23272a;
+}
+.dark-mode .load-bar-label {
+  color: var(--crimson-dark);
+}
+.dark-mode .history-entry {
+  background: #23272a;
+  color: var(--text-main);
+}
+.dark-mode .share-embed-panel button {
+  background: var(--gold);
+  color: #181a1b;
+}
+.dark-mode .share-embed-panel button:hover {
+  background: var(--gold-dark);
+  color: #23272a;
+}
+.dark-mode .share-input {
+  background: #23272a;
+  color: var(--crimson);
+  border: 1px solid var(--crimson);
 }
 .container {
   max-width: 900px;
